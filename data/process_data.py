@@ -37,7 +37,7 @@ def clean_data(df):
     df = df.drop_duplicates()
     return df
 
-
+#test
 def save_data(df, database_filename):
     engine = create_engine('sqlite:///' + str(database_filename), echo=False)
     df.to_sql('Messages', engine, if_exists = 'replace',index=False)
