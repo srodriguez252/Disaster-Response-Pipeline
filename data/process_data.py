@@ -20,16 +20,27 @@ def load_data(messages_filepath, categories_filepath):
 
 
 def clean_data(df):
+    '''
+    The function splits the concatenated category data into individual columns, cleans and converts the values 
+    from strings to integers, and then merges these columns back into the original DataFrame. It also removes 
+    duplicate rows from the DataFrame to ensure the data is unique.
+    
+    Input:
+    Pandas dataframe
+    
+    Output:
+    Cleaned dataframe
+    
+    
+    '''
     categories = df['categories'].str.split(';', expand = True)
     row = categories.iloc[0].str.split('-', expand=True)
     category_colnames = row[0]
     categories.columns = category_colnames
     
     for column in categories:
-        # set each value to be the last character of the string
         categories[column] = categories[column].str[-1]
         
-        # convert column from string to numeric
         categories[column] = categories[column].astype(str)
         
     df = df.drop('categories', axis=1)
