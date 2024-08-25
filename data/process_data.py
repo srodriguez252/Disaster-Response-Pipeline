@@ -31,7 +31,6 @@ def clean_data(df):
     Output:
     Cleaned dataframe
     
-    
     '''
     categories = df['categories'].str.split(';', expand = True)
     row = categories.iloc[0].str.split('-', expand=True)
@@ -41,21 +40,54 @@ def clean_data(df):
     for column in categories:
         categories[column] = categories[column].str[-1]
         
-        categories[column] = categories[column].astype(str)
+        categories[column] = pd.to_numeric(categories[column])
         
     df = df.drop('categories', axis=1)
     df = pd.concat([df,categories], axis = 1)
     df = df.drop_duplicates()
     return df
 
-#test
+
 def save_data(df, database_filename):
+    '''
+    This function takes a DataFrame and a database filename as input. It connects to the SQLite database using SQLAlchemy, 
+    then saves the DataFrame to a table named 'Messages'. The function uses the 'replace' option to ensure that the table 
+    is overwritten if it already exists.
+    
+    Input:
+    Pandas dataframe
+    
+    Output:
+    The function doesn't return anything. It saves the DataFrame to the specified SQLite database file.
+    
+    '''
     engine = create_engine('sqlite:///' + str(database_filename), echo=False)
     df.to_sql('Messages', engine, if_exists = 'replace',index=False)
     pass  
 
 
 def main():
+    '''
+    The function loads data from two CSV files (messages and categories), cleans the data, 
+    and then saves the cleaned data to an SQLite database. If the user does not provide the 
+    correct number of arguments, the function prints a usage message with instructions.
+    
+    Input: 
+        Command-line arguments:
+            1. messages_filepath:
+                - The file path of the CSV file containing the disaster messages.
+        
+            2. categories_filepath:
+                - The file path of the CSV file containing the categories associated with the messages.
+        
+            3. database_filepath:
+                - The file path where the cleaned data should be saved in an SQLite database.
+    
+    Output:
+    The function does not return any values. It processes the input data and saves the cleaned DataFrame to a database.
+    
+    
+    '''
     if len(sys.argv) == 4:
 
         messages_filepath, categories_filepath, database_filepath = sys.argv[1:]
