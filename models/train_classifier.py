@@ -3,6 +3,7 @@ import re
 import nltk
 nltk.download('stopwords')
 nltk.download('wordnet')
+nltk.download('punkt') 
 import pandas as pd
 from nltk.corpus import stopwords
 from sklearn.pipeline import Pipeline
@@ -14,6 +15,7 @@ from sklearn.metrics import classification_report
 from nltk.stem import PorterStemmer
 from sqlalchemy import create_engine
 from nltk.tokenize import word_tokenize
+from sklearn.multioutput import MultiOutputClassifier
 from nltk.stem.wordnet import WordNetLemmatizer
 from sklearn.model_selection import train_test_split
 import pickle
@@ -38,7 +40,7 @@ def tokenize(text):
     
     stemmed = [PorterStemmer().stem(w) for w in words]
     lemmed = [WordNetLemmatizer().lemmatize(w) for w in stemmed]
-
+    
     return lemmed
     
 
@@ -46,33 +48,30 @@ def tokenize(text):
 def build_model():
     
     pipeline = Pipeline([
-        ('vect', CountVectorizer(tokenizer=tokenize)),
+        ('vect', CountVectorizer(tokenizer=tokenize, token_pattern=None)),
         ('tfidf', TfidfTransformer()),
-        ('clf', RandomForestClassifier())
+        ('clf', MultiOutputClassifier(RandomForestClassifier()))
     ])
+    
     parameters = {
-        'vect__max_features': [5000, 10000, 20000],  # Number of features for CountVectorizer
-        'vect__ngram_range': [(1, 1), (1, 2), (2, 2)],  # N-gram range for CountVectorizer
-        'tfidf__use_idf': [True, False],  # Whether to use IDF in TfidfTransformer
-        'tfidf__norm': ['l1', 'l2'],  # Normalization for TfidfTransformer
-        'clf__n_estimators': [100, 200, 300],  # Number of trees in RandomForestClassifier
-        'clf__max_depth': [None, 5, 10],  # Maximum depth of trees in RandomForestClassifier
-        'clf__min_samples_split': [2, 5, 10],  # Minimum samples for split in RandomForestClassifier
-        'clf__min_samples_leaf': [1, 5, 10]  # Minimum samples for leaf in RandomForestClassifier
+        'clf__estimator__n_estimators': [10],
+        'clf__estimator__min_samples_split': [2],
     }
-
-    model = GridSearchCV(pipeline, parameters, cv=5, scoring='f1_macro')
+    
+    model = GridSearchCV(pipeline, param_grid=parameters, n_jobs=1, verbose=2, cv=3)
     return model 
 
 
 def evaluate_model(model, X_test, Y_test, category_names):
     y_pred = model.predict(X_test)
-    print(classification_report(Y_test, y_pred, target_names=category_names))
+    evaluated_model = classification_report(Y_test, y_pred, target_names=category_names)
+    print(evaluated_model)
 
 
 def save_model(model, model_filepath):
-    pickle.dump(model, open(model_filepath, 'wb'))
-
+    
+    with open(model_filepath, 'wb') as file:
+        pickle.dump(model, file)
 
 
 
