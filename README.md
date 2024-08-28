@@ -1,5 +1,7 @@
 # Disaster Response Pipeline Project
 
+Machine learning pipeline that categorizes emergency messages based on the needs communicated by the sender.
+
 ### Instructions:
 1. Run the following commands in the project's root directory to set up your database and model.
 
