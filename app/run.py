@@ -10,6 +10,7 @@ from flask import render_template, request, jsonify
 from plotly.graph_objs import Bar
 import joblib
 from sqlalchemy import create_engine
+import plotly.figure_factory as ff
 
 
 app = Flask(__name__)
@@ -37,16 +38,15 @@ model = joblib.load("../models/classifier.pkl")
 @app.route('/')
 @app.route('/index')
 def index():
-    print("Index route accessed")
     # extract data needed for visuals
     # TODO: Below is an example - modify to extract data for your own visuals
     genre_counts = df.groupby('genre').count()['message']
     genre_names = list(genre_counts.index)
+
+    top_categories = df.iloc[:,4:].sum().sort_values(ascending=False).head(10)
+    top_category_names = top_categories.index
     
-    print("Genre Counts:", genre_counts)
-    print("Genre Names:", genre_names)
-    
-    
+    genre_category_distribution = df.groupby('genre').sum().iloc[:, 4:].transpose()
     
     # create visuals
     # TODO: Below is an example - modify to create your own visuals
@@ -68,9 +68,41 @@ def index():
                     'title': "Genre"
                 }
             }
-            
-            
+        },
+        
+        {
+            'data': [
+                Bar(
+                    x=top_categories,
+                    y=top_category_names,
+                    orientation='h'
+                )
+            ],
+            'layout': {
+                'title': 'Top 10 Categories by Frequency',
+                'xaxis': {'title': "Count"},
+                'yaxis': {'title': "Category"}
+            }
+        },
+        
+        
+        {
+            'data': [
+                Bar(
+                    x=genre_category_distribution.index,
+                    y=genre_category_distribution[genre],
+                    name=genre
+                ) for genre in genre_category_distribution.columns
+            ],
+            'layout': {
+                'title': 'Category Distribution by Genre',
+                'yaxis': {'title': "Count"},
+                'xaxis': {'title': "Category", 'tickangle': -45},
+                'barmode': 'stack'
+            }
         }
+        
+        
     ]
     
     # encode plotly graphs in JSON
