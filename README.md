@@ -2,6 +2,7 @@
 
 Machine learning pipeline that categorizes emergency messages based on the needs communicated by the sender. The project is divided into 3 parts: an ETL pipeline that processes the data and creates a database, an ML pipeline that trains a machine learning model with the database provided by the ETL pipeline, and a web application that consumes the database and the ML model to classify emergency messages.
 
+![WebAplicationScreenshot](/disaster-response-pipeline-project-index.PNG)
 
 
 ## Instalation and Setup
