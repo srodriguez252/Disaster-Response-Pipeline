@@ -13,9 +13,9 @@ Machine learning pipeline that categorizes emergency messages based on the needs
             - master.html
         - run.py    
     - data
-        - DisasterResponse.db
         - disaster_categories.csv
         - disaster_messages.csv
+        - DisasterResponse.db
         - process_data.py
     - models
         - classifier.pkl

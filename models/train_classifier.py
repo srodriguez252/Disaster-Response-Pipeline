@@ -46,20 +46,19 @@ def load_data(database_filepath):
 def tokenize(text):
     '''
     Processes the input text by cleaning, tokenizing, removing stopwords, 
-    and applying stemming and lemmatization.
+    and applying emmatization.
 
     Input:
     - text: The raw text string that needs to be processed.
 
     Output:
-    - lemmed: A list of cleaned, stemmed, and lemmatized tokens.
+    - lemmed: A list of cleaned and lemmatized tokens.
     '''
     text = re.sub(r"[^a-zA-Z0-9]", " ", text.lower())
     words = text.split()
     words = [w for w in words if w not in stopwords.words("english")]
     
-    stemmed = [PorterStemmer().stem(w) for w in words]
-    lemmed = [WordNetLemmatizer().lemmatize(w) for w in stemmed]
+    lemmed = [WordNetLemmatizer().lemmatize(w) for w in words]
     
     return lemmed
     

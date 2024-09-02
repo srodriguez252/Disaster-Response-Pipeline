@@ -41,10 +41,12 @@ def clean_data(df):
         categories[column] = categories[column].str[-1]
         
         categories[column] = pd.to_numeric(categories[column])
-        
+    
+    categories.replace(2,1, inplace=True)    
     df = df.drop('categories', axis=1)
     df = pd.concat([df,categories], axis = 1)
     df = df.drop_duplicates()
+    
     return df
 
 
