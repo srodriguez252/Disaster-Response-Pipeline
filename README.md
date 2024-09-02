@@ -20,6 +20,7 @@ Machine learning pipeline that categorizes emergency messages based on the needs
     - models
         - classifier.pkl
         - train_classifier.py
+    - LICENSE
     - README.md
     - disaster-response-pipeline-project-index.PNG
     - requirements.txt
