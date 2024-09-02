@@ -4,6 +4,25 @@ Machine learning pipeline that categorizes emergency messages based on the needs
 
 ![WebAplicationScreenshot](/disaster-response-pipeline-project-index.PNG)
 
+## Poject Structure
+
+- Disaster-Response-Pipeline
+    - app
+        - templates
+            - go.html
+            - master.html
+        - run.py    
+    - data
+        - DisasterResponse.db
+        - disaster_categories.csv
+        - disaster_messages.csv
+        - process_data.py
+    - models
+        - classifier.pkl
+        - train_classifier.py
+    - README.md
+    - disaster-response-pipeline-project-index.PNG
+    - requirements.txt
 
 ## Instalation and Setup
 
